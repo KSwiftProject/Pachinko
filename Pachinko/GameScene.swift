@@ -30,6 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    let lineY = CGFloat(600)
+    
     override func didMove(to view: SKView) {
         let background = SKSpriteNode(imageNamed: "background.jpg")
         background.position = CGPoint(x: 512, y: 384)
@@ -61,6 +63,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         editLabel.text = "Edit"
         editLabel.position = CGPoint(x: 80, y: 700)
         addChild(editLabel)
+        
+        let line = SKSpriteNode(color: UIColor.gray, size: CGSize(width: 1024, height: 1))
+        line.position = CGPoint(x: 512, y: lineY)
+        addChild(line)
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -120,27 +126,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 editingMode = !editingMode
             } else {
                 if editingMode {
-                    let size = CGSize(width: GKRandomDistribution(lowestValue: 16, highestValue: 128).nextInt(), height: 16)
-                    let box = SKSpriteNode(color: RandomColor(), size: size)
-                    box.zRotation = RandomCGFloat(min: 0, max: 3)
-                    box.position = location
-                    
-                    box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
-                    box.physicsBody?.isDynamic = false
-                    
-                    addChild(box)
-                    
+                    makeObstacle(location: location)
                 } else {
-                    let ball = SKSpriteNode(imageNamed: "ballRed")
-                    ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
-                    ball.physicsBody!.contactTestBitMask = ball.physicsBody!.collisionBitMask
-                    ball.physicsBody?.restitution = 0.4
-                    ball.position = location
-                    ball.name = "ball"
-                    addChild(ball)
+                    if location.y > lineY {
+                        let ball = SKSpriteNode(imageNamed: "ballRed")
+                        ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
+                        ball.physicsBody!.contactTestBitMask = ball.physicsBody!.collisionBitMask
+                        ball.physicsBody?.restitution = 0.4
+                        ball.position = location
+                        ball.name = "ball"
+                        addChild(ball)
+                    } else {
+                         makeObstacle(location: location)
+                    }
                 }
             }
         }
+    }
+    
+    func makeObstacle(location: CGPoint) {
+        let size = CGSize(width: GKRandomDistribution(lowestValue: 16, highestValue: 128).nextInt(), height: 16)
+        let box = SKSpriteNode(color: RandomColor(), size: size)
+        box.zRotation = RandomCGFloat(min: 0, max: 3)
+        box.position = location
+        
+        box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
+        box.physicsBody?.isDynamic = false
+        
+        addChild(box)
     }
     
     func collisionBetween(ball: SKNode, object: SKNode) {
