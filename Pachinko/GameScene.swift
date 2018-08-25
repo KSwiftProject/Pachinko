@@ -31,6 +31,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     let lineY = CGFloat(600)
+    var balls = ["ballGrey", "ballPurple", "ballRed", "ballCyan", "ballYellow", "ballGreen", "ballBlue"]
     
     override func didMove(to view: SKView) {
         let background = SKSpriteNode(imageNamed: "background.jpg")
@@ -129,7 +130,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     makeObstacle(location: location)
                 } else {
                     if location.y > lineY {
-                        let ball = SKSpriteNode(imageNamed: "ballRed")
+                        let ball = SKSpriteNode(imageNamed: balls[RandomInt(min: 0, max: balls.count - 1)])
                         ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
                         ball.physicsBody!.contactTestBitMask = ball.physicsBody!.collisionBitMask
                         ball.physicsBody?.restitution = 0.4
